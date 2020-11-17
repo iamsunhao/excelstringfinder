@@ -62,10 +62,7 @@ func listFiles(dir string) []string {
 // FindStringInXLSX 在一个 xlsx 文件中查找一个字符串
 func FindStringInXLSX(s string, filename string) {
 	// 对文件进行初步的检查，确定是否是 xlsx 文件
-	if len(filename) < 4 {
-		return
-	}
-	if filename[len(filename)-4:] != "xlsx" {
+	if len(filename) < 4 || filename[len(filename)-4:] != "xlsx" {
 		return
 	}
 	f, err := excelize.OpenFile(filename)
