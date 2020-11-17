@@ -1,4 +1,4 @@
-module xlrd
+module xlsxstrfinder
 
 go 1.15
 
