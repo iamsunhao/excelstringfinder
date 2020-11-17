@@ -12,9 +12,12 @@ import (
 )
 
 func main() {
-	s := "地"
-	dir := "/home/sun/Code/"
-	flist := listFiles(dir)
+    if len(os.Args) <= 2 {
+        fmt.Printf("Usage: %s string directory\nexample: %s hello .\n", os.Args[0], os.Args[0])
+        return
+    }
+    s := os.Args[1]
+	flist := listFiles(os.Args[2])
 	wg := sync.WaitGroup{}
 	for _, f := range flist {
 		wg.Add(1)
