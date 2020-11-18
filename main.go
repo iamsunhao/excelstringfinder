@@ -12,11 +12,11 @@ import (
 )
 
 func main() {
-    if len(os.Args) <= 2 {
-        fmt.Printf("Usage: %s string directory\nexample: %s hello .\n", os.Args[0], os.Args[0])
-        return
-    }
-    s := os.Args[1]
+	if len(os.Args) <= 2 {
+		fmt.Printf("Usage: %s string directory\nexample: %s hello .\n", os.Args[0], os.Args[0])
+		return
+	}
+	s := os.Args[1]
 	flist := listFiles(os.Args[2])
 	wg := sync.WaitGroup{}
 	for _, f := range flist {
@@ -40,9 +40,9 @@ func listFiles(dir string) []string {
 	if !dirInfo.IsDir() {
 		log.Fatal("not a path")
 	}
-	// 新建一个长度为0的切片，用于返回文件列表
-	ans := make([]string, 0)
-	// 创建一个匿名函数，用于递归将文件添加到之前新建的切片中
+	// 新建一个长度为0，容量为500的切片，用于返回文件列表
+	ans := make([]string, 0, 500)
+	// 创建一个匿名函数，用于递归将xlsx文件添加到之前新建的切片中
 	var addFileToList func(string)
 	addFileToList = func(dir string) {
 		items, err := ioutil.ReadDir(dir)
@@ -51,7 +51,8 @@ func listFiles(dir string) []string {
 		}
 		for _, item := range items {
 			itemName := dir + "/" + item.Name()
-			if !item.IsDir() {
+			// 如果是一个 xlsx 文件，则加入到切片中
+			if !item.IsDir() && len(itemName) >= 4 && itemName[len(itemName)-4:] == "xlsx" {
 				ans = append(ans, itemName)
 			} else {
 				addFileToList(itemName)
@@ -64,25 +65,29 @@ func listFiles(dir string) []string {
 
 // FindStringInXLSX 在一个 xlsx 文件中查找一个字符串
 func FindStringInXLSX(s string, filename string) {
-	// 对文件进行初步的检查，确定是否是 xlsx 文件
-	if len(filename) < 4 || filename[len(filename)-4:] != "xlsx" {
-		return
-	}
 	f, err := excelize.OpenFile(filename)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	rows := f.GetRows("Sheet1")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	for i, row := range rows {
-		for j, cell := range row {
-			if strings.Contains(cell, s) {
-				fmt.Printf("在 %s 的第 %d 行 %d 列中找到了 %s 。\n", filename, i+1, j+1, s)
+	// 新建一个空字符串，用于一次返回所有结果
+	ans := ""
+	// 遍历每一个 sheet
+	for _, sheet := range f.GetSheetMap() {
+		rows := f.GetRows(sheet)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		for i, row := range rows {
+			for j, cell := range row {
+				if strings.Contains(cell, s) {
+					ans = ans + fmt.Sprintf("在 %s 中 %s 的第 %d 行 %d 列找到了 %s 。\n", filename, sheet, i+1, j+1, s)
+				}
 			}
 		}
+	}
+	if len(ans) != 0 {
+		fmt.Print(ans)
 	}
 }
