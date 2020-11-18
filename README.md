@@ -2,8 +2,8 @@
 
 从指定目录下的所有 xlsx 文件中查找指定的字符串  
 示例：  
-    xlsx [字符串] [目录]  
-    xlsx HELLO /mnt/f  
+    xlsxstrfinder [字符串] [目录]  
+    xlsxstrfinder HELLO /mnt/f  
 输出：  
     open /mnt/f/$RECYCLE.BIN/S-1-5-18: permission denied  
     open /mnt/f/System Volume Information: permission denied  
