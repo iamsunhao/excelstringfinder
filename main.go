@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"github.com/extrame/xls"
 )
 
 func main() {
@@ -23,14 +24,18 @@ func main() {
 		wg.Add(1)
 		go func(s, f string) {
 			defer wg.Done()
-			FindStringInXLSX(s, f)
+			if f[len(f)-4:] == "xlsx" {
+				FindStringInXLSX(s, f)
+			} else {
+				FindStringInXLS(s, f)
+			}
 		}(s, f)
 	}
 	wg.Wait()
 
 }
 
-// listFiles 通过递归的方式将指定目录下的所有xlsx文件写入到一个切片中
+// listFiles 通过递归的方式将指定目录下的所有 xls/xlsx 文件写入到一个切片中
 func listFiles(dir string) []string {
 	// 判断输入的路径是否合法
 	dirInfo, err := os.Stat(dir)
@@ -42,7 +47,7 @@ func listFiles(dir string) []string {
 	}
 	// 新建一个长度为0，容量为500的切片，用于返回文件列表
 	ans := make([]string, 0, 500)
-	// 创建一个匿名函数，用于递归将xlsx文件添加到之前新建的切片中
+	// 创建一个匿名函数，用于递归将 xls/xlsx 文件添加到之前新建的切片中
 	var addFileToList func(string)
 	addFileToList = func(dir string) {
 		items, err := ioutil.ReadDir(dir)
@@ -52,9 +57,9 @@ func listFiles(dir string) []string {
 		}
 		for _, item := range items {
 			itemName := dir + "/" + item.Name()
-			// 如果是一个 xlsx 文件，则加入到切片中
+			// 如果是一个 xls/xlsx 文件，则加入到切片中
 			if !item.IsDir() {
-				if len(itemName) >= 4 && itemName[len(itemName)-4:] == "xlsx" {
+				if len(itemName) >= 4 && (itemName[len(itemName)-4:] == "xlsx" || itemName[len(itemName)-3:] == "xls") {
 					ans = append(ans, itemName)
 				}
 			} else {
@@ -78,15 +83,31 @@ func FindStringInXLSX(s string, filename string) {
 	// 遍历每一个 sheet
 	for _, sheet := range f.GetSheetMap() {
 		rows := f.GetRows(sheet)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
 		for i, row := range rows {
 			for j, cell := range row {
 				if strings.Contains(cell, s) {
 					ans = ans + fmt.Sprintf("在 %s 中 %s 的第 %d 行 %d 列找到了 %s 。\n", filename, sheet, i+1, j+1, s)
 				}
+			}
+		}
+	}
+	if len(ans) != 0 {
+		fmt.Print(ans)
+	}
+}
+
+func FindStringInXLS(s, filename string) {
+	f, err := xls.Open(filename, "utf-8")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ans := ""
+	rows := f.ReadAllCells(100000000)
+	for _, row := range rows {
+		for _, cell := range row {
+			if strings.Contains(cell, s) {
+				ans = ans + fmt.Sprintf("在 %s 中找到了 %s 。\n", filename, s)
 			}
 		}
 	}
