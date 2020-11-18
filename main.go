@@ -13,7 +13,7 @@ import (
 
 func main() {
 	if len(os.Args) <= 2 {
-		fmt.Printf("Usage: %s string directory\nexample: %s hello .\n", os.Args[0], os.Args[0])
+		fmt.Printf("Usage: %s string directory\nExample: %s hello .\n", os.Args[0], os.Args[0])
 		return
 	}
 	s := os.Args[1]
@@ -30,7 +30,7 @@ func main() {
 
 }
 
-// listFiles 通过递归的方式将指定目录下的所有文件写入到一个切片中
+// listFiles 通过递归的方式将指定目录下的所有xlsx文件写入到一个切片中
 func listFiles(dir string) []string {
 	// 判断输入的路径是否合法
 	dirInfo, err := os.Stat(dir)
@@ -70,7 +70,7 @@ func FindStringInXLSX(s string, filename string) {
 		fmt.Println(err)
 		return
 	}
-	// 新建一个空字符串，用于一次返回所有结果
+	// 新建一个空字符串，用于一次性返回所有结果
 	ans := ""
 	// 遍历每一个 sheet
 	for _, sheet := range f.GetSheetMap() {
