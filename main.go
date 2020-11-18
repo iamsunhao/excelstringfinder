@@ -47,7 +47,8 @@ func listFiles(dir string) []string {
 	addFileToList = func(dir string) {
 		items, err := ioutil.ReadDir(dir)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+			return
 		}
 		for _, item := range items {
 			itemName := dir + "/" + item.Name()
