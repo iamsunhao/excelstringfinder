@@ -38,7 +38,7 @@ func listFiles(dir string) []string {
 		log.Fatal(err)
 	}
 	if !dirInfo.IsDir() {
-		log.Fatal("not a path")
+		log.Fatalf("%s is not a directory.", dir)
 	}
 	// 新建一个长度为0，容量为500的切片，用于返回文件列表
 	ans := make([]string, 0, 500)
@@ -47,14 +47,17 @@ func listFiles(dir string) []string {
 	addFileToList = func(dir string) {
 		items, err := ioutil.ReadDir(dir)
 		if err != nil {
+			// 有BUG啊
 			fmt.Println(err)
 			return
 		}
 		for _, item := range items {
 			itemName := dir + "/" + item.Name()
 			// 如果是一个 xlsx 文件，则加入到切片中
-			if !item.IsDir() && len(itemName) >= 4 && itemName[len(itemName)-4:] == "xlsx" {
-				ans = append(ans, itemName)
+			if !item.IsDir() {
+				if len(itemName) >= 4 && itemName[len(itemName)-4:] == "xlsx" {
+					ans = append(ans, itemName)
+				}
 			} else {
 				addFileToList(itemName)
 			}
