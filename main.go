@@ -47,7 +47,6 @@ func listFiles(dir string) []string {
 	addFileToList = func(dir string) {
 		items, err := ioutil.ReadDir(dir)
 		if err != nil {
-			// 有BUG啊
 			fmt.Println(err)
 			return
 		}
