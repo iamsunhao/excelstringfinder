@@ -1,8 +1,8 @@
 ## excelstringfinder
 
-从指定目录下的所有 xls/xlsx 文件中查找指定的字符串  
+从指定目录下的所有 xlsx 文件中查找指定的字符串  
 示例：  
-    excelstringfinder [字符串] [目录]  
+    excelstringfinder 字符串 目录  
     excelstringfinder HELLO /mnt/f  
 输出：  
     open /mnt/f/$RECYCLE.BIN/S-1-5-18: permission denied  
