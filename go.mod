@@ -1,4 +1,4 @@
-module xlsxstrfinder
+module excelstringfinder
 
 go 1.15
 
