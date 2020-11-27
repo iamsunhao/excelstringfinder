@@ -38,7 +38,7 @@ func listFiles(dir string) []string {
 		log.Fatal(err)
 	}
 	if !dirInfo.IsDir() {
-		log.Fatalf("%s is not a directory.", dir)
+		log.Fatalf("%s 不是一个文件夹。", dir)
 	}
 	// 新建一个长度为0，容量为500的切片，用于返回文件列表
 	ans := make([]string, 0, 500)
