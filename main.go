@@ -13,7 +13,8 @@ import (
 
 func main() {
 	if len(os.Args) <= 2 {
-		fmt.Printf("Usage: %s string directory\nExample: %s hello .\n", os.Args[0], os.Args[0])
+		fmt.Printf("说明：%s 需查找的字符串 目标文件夹。\n", os.Args[0])
+        fmt.Printf("示例：%s hello /home\n", os.Args[0])
 		return
 	}
 	s := os.Args[1]
